@@ -6,7 +6,7 @@ import (
 
 func SplitAndPrint(s string, mapFont map[int][]string) string {
 	if mapFont == nil {
-		return "Sorry, I could not print what you have typed"
+		return ""
 	}
 	out_split := strings.Split(s, string([]byte{13, 10})) // split with \r and \n
 	var out string
@@ -24,14 +24,9 @@ func OutOfFont(s string, mapFont map[int][]string) string {
 	if s == "" { // if string entered wad emty return \n
 		return "\n"
 	} else {
-		var asciiArt [][]string
-		j := 0
-		for _, p := range s { // range in word and take font in map
-			asciiArt = append(asciiArt, mapFont[int(p)])
-		}
 		for i := 0; i < 8; i++ { // range 8 time
-			for j = 0; j < len(s); j++ {
-				strreturn += asciiArt[j][i] // add head by head and body by body and last bottum
+			for _, p := range s { // range in word and take font in map
+				strreturn += mapFont[int(p)][i] // add head by head and body by body and last bottum
 			}
 			strreturn += "\n" // make /n in last
 		}

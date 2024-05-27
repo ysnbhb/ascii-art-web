@@ -6,8 +6,8 @@ import (
 )
 
 func Font(s string) map[int][]string {
-	file, err := os.Open(".draw/" + s + ".txt") // open file
-	if err != nil {                             // hundel if was somme err
+	file, err := os.Open("draw/" + s + ".txt") // open file
+	if err != nil {                            // hundel if was somme err
 		return nil
 	}
 	artAlpha := make(map[int][]string) // ceat map

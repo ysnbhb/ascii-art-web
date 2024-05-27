@@ -7,20 +7,21 @@
   </head>
   <body>
     <div class="ascii-titel">
-      <h1>Enter something</h1>
+      <h1>Write something</h1>
     </div>
     <form method="post">
-      <textarea name="user_input" placeholder="put same thing"></textarea>
+      <textarea name="user_input" placeholder="put something" required="" maxlength="1000"></textarea>
       <br />
       <select name="select">
-        <option value="standard">standard</option>
-        <option value="shadow">shadow</option>
-        <option value="thinkertoy">thinkertoy</option>
+        <option value="standard">Standard</option>
+        <option value="shadow">Shadow</option>
+        <option value="thinkertoy">Thinkertoy</option>
       </select>
       <div class="button-div">
-        <button type="submit">great ascii</button>
+        <button type="submit">Generate ascii</button>
       </div>
     </form>
     <pre>{{.}}</pre>
+    
   </body>
 </html>
