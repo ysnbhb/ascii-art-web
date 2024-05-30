@@ -21,15 +21,11 @@ func SplitAndPrint(s string, mapFont map[int][]string) string {
 
 func OutOfFont(s string, mapFont map[int][]string) string {
 	var strreturn string
-	if s == "" { // if string entered wad emty return \n
-		return "\n"
-	} else {
-		for i := 0; i < 8; i++ { // range 8 time
-			for _, p := range s { // range in word and take font in map
-				strreturn += mapFont[int(p)][i] // add head by head and body by body and last bottum
-			}
-			strreturn += "\n" // make /n in last
+	for i := 0; i < 8; i++ { // range 8 time
+		for _, p := range s { // range in word and take font in map
+			strreturn += mapFont[int(p)][i] // add head by head and body by body and last bottum
 		}
-		return strreturn
+		strreturn += "\n" // make /n in last
 	}
+	return strreturn
 }
