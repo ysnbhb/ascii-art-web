@@ -10,5 +10,9 @@ import (
 func main() {
 	http.HandleFunc("/", web.Print) // if i was in url / use func Print
 	http.HandleFunc("/ascii-art", web.Handel_input)
-	fmt.Print(http.ListenAndServe(":8080", nil)) // this func for run server
+	imgeServe := http.FileServer(http.Dir("image"))
+	styeServe := http.FileServer(http.Dir("style"))
+	http.Handle("/pictures/", http.StripPrefix("/pictures", imgeServe))
+	http.Handle("/css/", http.StripPrefix("/css", styeServe))
+	fmt.Print(http.ListenAndServe(":8081", nil)) // this func for run server
 }

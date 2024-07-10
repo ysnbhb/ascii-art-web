@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print ascii art : {{.Value}}</title>
+    <link rel="icon" href="/pictures/download.jpg" type="image" />
+    <link rel="stylesheet" href="css/print.css" />
+  </head>
+
+  <body>
+    <div class="div_print">
+      {{if .Elment}}
+      <pre>{{.Elment}}</pre>
+      {{end}}
+      <button><a href="/"> return </a></button>
+    </div>
+  </body>
+</html>

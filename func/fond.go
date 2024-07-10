@@ -2,13 +2,17 @@ package web
 
 import (
 	"bufio"
-	"os"
+	"embed"
+	"net/http"
 )
 
-func Font(s string) map[int][]string {
-	file, err := os.Open("draw/" + s + ".txt") // open file
-	if err != nil {                            // hundel if was somme err
-		return nil
+//go:embed draw
+var file embed.FS
+
+func Font(s string) (map[int][]string, string, int) {
+	file, err := file.Open("draw/" + s + ".txt") // open file
+	if err != nil {                              // hundel if was somme err
+		return nil, "bad request", http.StatusBadRequest
 	}
 	artAlpha := make(map[int][]string) // ceat map
 	defer file.Close()                 // close if func finsh
@@ -24,7 +28,10 @@ func Font(s string) map[int][]string {
 			lines = []string{} // clean array
 		}
 	}
-	return artAlpha
+	if i != 855 {
+		return nil, "server down", http.StatusInternalServerError
+	}
+	return artAlpha, "", http.StatusOK
 }
 
 func Checkout(s string) (bool, rune) { // check if there are unvalide ascii in text

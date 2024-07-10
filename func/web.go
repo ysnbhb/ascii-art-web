@@ -5,54 +5,84 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type Data struct {
 	Elment, Value string
+	Font          []string
 }
 
 var output Data
 
 func Print(w http.ResponseWriter, r *http.Request) { // w for send data from server to user and r for take data from user
-	dir, _ := os.ReadDir("draw")
-	fmt.Println(dir)
-	fmt.Println(r.PostForm)
+	output.NameFont()
+	if output.Font == nil {
+		http.Error(w, "Internal server Eroor", http.StatusInternalServerError) // hundul if was file html not
+		return
+	}
 	tmp, err := template.ParseFiles("./templet/index.html") // pionter in file html
 	if r.URL.Path != "/" {                                  // handel if url was not valide
 		http.NotFound(w, r) // enter to func for print not found
 		return
 	}
+
 	if err != nil {
-		http.Error(w, "server down ", http.StatusInternalServerError) // hundul if was file html not
+		fmt.Println(err)
+		http.Error(w, "server down", http.StatusInternalServerError) // hundul if was file html not
 		return
 	}
 	tmp = template.Must(tmp, err)
-	err = (tmp.Execute(w, output)) //f send data to showing in page in form respons and creat ascii art
+	err = (tmp.Execute(w, output)) // f send data to showing in page in form respons and creat ascii art
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusAccepted)
+		http.Error(w, "Internal server Eroor", http.StatusInternalServerError)
 	}
 }
 
 func Handel_input(w http.ResponseWriter, r *http.Request) {
-	font := r.FormValue("select")
+	tmp, err := template.ParseFiles("./templet/print.html")
+	font := r.FormValue("font")
 	user_input := r.FormValue("user_input")
-	fmt.Println(r.)
-	if len(font) == 0 || len(user_input) == 0 {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-	}
-	if r.Method != "POST" {
-		http.Redirect(w, r, "/", http.StatusBadRequest)
+	if r.Method != http.MethodPost {
+		http.Redirect(w, r, "/", http.StatusMethodNotAllowed)
 		return
 	}
-	mapDraw := Font(font)
-	if mapDraw == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	if err != nil {
+		http.Error(w, "Internal server Eroor", http.StatusInternalServerError) // hundul if was file html not
+		return
 	}
-	Stock(user_input, mapDraw, &output)
-	http.Redirect(w, r, "/", http.StatusFound)
+	if len(font) == 0 || len(user_input) == 0 {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+	if len(user_input) > 1000 {
+		user_input = user_input[:1001]
+	}
+	mapDraw, ErrMsg, ErrStatus := Font(font)
+	if mapDraw == nil {
+		http.Error(w, ErrMsg, ErrStatus)
+		return
+	}
+	output.Stock(user_input, mapDraw)
+
+	err = (tmp.Execute(w, output))
+	if err != nil {
+		http.Error(w, "Internal server Eroor", http.StatusInternalServerError)
+	}
 }
 
-func Stock(s string, mapDraw map[int][]string, r *Data) {
+func (r *Data) Stock(s string, mapDraw map[int][]string) {
 	r.Value = s
 	r.Elment = SplitAndPrint(s, mapDraw)
+}
+
+func (r *Data) NameFont() {
+	dir, _ := os.Open("func/draw")
+	tr, _ := dir.Readdirnames(-1)
+	r.Font = nil
+	for _, t := range tr {
+		if strings.HasSuffix(t, ".txt") {
+			r.Font = append(r.Font, t[:len(t)-4])
+		}
+	}
 }
